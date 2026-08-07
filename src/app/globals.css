@@ -32,6 +32,7 @@
 
 html {
   color-scheme: light;
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
