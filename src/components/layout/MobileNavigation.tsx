@@ -95,6 +95,7 @@ export function MobileNavigation({ ctaLabel = "Enquire Now" }: MobileNavigationP
 
       <button
         type="button"
+        data-mobile-backdrop
         aria-label="Close navigation menu"
         aria-hidden={!isOpen}
         tabIndex={isOpen ? 0 : -1}
@@ -106,14 +107,16 @@ export function MobileNavigation({ ctaLabel = "Enquire Now" }: MobileNavigationP
 
       <aside
         ref={drawerRef}
+        data-mobile-drawer
         id="mobile-navigation"
         role="dialog"
         aria-modal="true"
         aria-labelledby="mobile-navigation-title"
         aria-hidden={!isOpen}
-        className={`fixed right-0 top-0 z-50 flex h-dvh w-[85vw] max-w-[360px] flex-col overflow-y-auto rounded-l-[2rem] border-l border-slate-200 bg-white px-6 pb-8 pt-6 shadow-2xl shadow-slate-950/20 transition-transform duration-300 ease-out motion-reduce:transition-none ${
-          isOpen ? "translate-x-0" : "pointer-events-none translate-x-full"
+        className={`fixed right-0 top-0 z-50 flex h-dvh min-w-[240px] w-[60vw] max-w-[320px] flex-col overflow-y-auto rounded-l-[2rem] border-l border-slate-200 bg-white px-6 pb-8 pt-6 shadow-2xl shadow-slate-950/20 transition-transform duration-300 ease-out motion-reduce:transition-none ${
+          isOpen ? "pointer-events-auto" : "pointer-events-none"
         }`}
+        style={{ transform: isOpen ? "translateX(0)" : "translateX(100%)" }}
       >
         <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-5">
           <div className="flex items-center gap-3">
