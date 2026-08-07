@@ -113,7 +113,7 @@ export function MobileNavigation({ ctaLabel = "Enquire Now" }: MobileNavigationP
         aria-modal="true"
         aria-labelledby="mobile-navigation-title"
         aria-hidden={!isOpen}
-        className={`fixed right-0 top-0 z-50 flex h-dvh min-w-[240px] w-[60vw] max-w-[320px] flex-col overflow-y-auto rounded-l-[2rem] border-l border-slate-200 bg-white px-6 pb-8 pt-6 shadow-2xl shadow-slate-950/20 transition-transform duration-300 ease-out motion-reduce:transition-none ${
+        className={`fixed right-3 top-3 z-50 flex h-auto max-h-[calc(100dvh-24px)] min-w-[240px] w-[60vw] max-w-[320px] flex-col overflow-y-auto rounded-2xl border border-slate-200 bg-white px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-5 shadow-xl shadow-slate-950/20 transition-transform duration-300 ease-out motion-reduce:transition-none ${
           isOpen ? "pointer-events-auto" : "pointer-events-none"
         }`}
         style={{ transform: isOpen ? "translateX(0)" : "translateX(100%)" }}
@@ -138,14 +138,14 @@ export function MobileNavigation({ ctaLabel = "Enquire Now" }: MobileNavigationP
           </button>
         </div>
 
-        <nav aria-label="Mobile navigation" className="flex flex-1 flex-col gap-1 pt-6">
+        <nav aria-label="Mobile navigation" className="flex flex-col gap-1 pt-5">
           {navItems.map((item) => (
             <a
               key={item.href}
               href={item.href}
               tabIndex={isOpen ? 0 : -1}
               onClick={closeMenu}
-              className="rounded-xl px-3 py-3 text-base font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
+              className="rounded-xl px-3 py-2.5 text-base font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
             >
               {item.label}
             </a>
@@ -155,7 +155,7 @@ export function MobileNavigation({ ctaLabel = "Enquire Now" }: MobileNavigationP
             href="#contact"
             tabIndex={isOpen ? 0 : -1}
             onClick={closeMenu}
-            className="mt-auto inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2"
+            className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2"
           >
             {ctaLabel}
           </a>
