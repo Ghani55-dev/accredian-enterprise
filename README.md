@@ -2,7 +2,11 @@
 
 ## Live Demo
 
-Not deployed yet. Production deployment is authentication-blocked in this environment.
+https://accredian-enterprise-flax-nu.vercel.app/
+
+## GitHub Repository
+
+https://github.com/Ghani55-dev/accredian-enterprise
 
 ## Overview
 
@@ -39,7 +43,7 @@ This is an independent engineering assignment based on the public Accredian Ente
 - TypeScript
 - Tailwind CSS `4.x`
 - Zod `4.4.3`
-- `pg` `8.x`
+- `pg` `8.22.0`
 - PostgreSQL / Neon
 - Vercel deployment target
 
@@ -109,9 +113,11 @@ public/
 - Static testimonials instead of an unnecessary carousel dependency
 - FAQ answers are limited to content verified from the live reference; unverified categories remain explicit empty states
 
-## Lead Capture Architecture
+## Lead Capture & API
 
 The form accepts `fullName`, `workEmail`, `phone`, `company`, optional `jobTitle`, optional `teamSize`, and `trainingRequirement`. The API additionally accepts an empty `website` honeypot field. All values are bounded and validated server-side.
+
+The form includes loading, validation-error, API-error, and success states, prevents duplicate submissions while a request is active, and associates field errors with their controls for assistive technology.
 
 ## API Contract
 
@@ -129,9 +135,11 @@ There is intentionally no public `GET /api/leads` endpoint.
 
 ## Database
 
-Provision a PostgreSQL/Neon database, set `DATABASE_URL`, then execute [db/migrations/001_create_enterprise_leads.sql](db/migrations/001_create_enterprise_leads.sql). The migration is create-only and repeatable through `CREATE TABLE IF NOT EXISTS`.
+The application uses PostgreSQL through `pg` / `node-postgres`. Provision a local PostgreSQL database or compatible hosted PostgreSQL service such as Neon, set the server-only `DATABASE_URL`, then execute [db/migrations/001_create_enterprise_leads.sql](db/migrations/001_create_enterprise_leads.sql). The migration is create-only and repeatable through `CREATE TABLE IF NOT EXISTS`.
 
-The table stores the enquiry fields, a default `new` status, and a database-generated `created_at` timestamp.
+The repository uses parameterized SQL, a service/repository boundary, database-generated timestamps, and no public lead-list endpoint.
+
+Local PostgreSQL persistence has been verified end-to-end: `POST /api/leads` returned `201`, followed by independent verification of a synthetic PostgreSQL row with `status = new` and a database-generated `created_at` timestamp. Production database persistence has not been independently verified; it depends on a valid server-side `DATABASE_URL` in the Vercel environment.
 
 ## Getting Started
 
@@ -149,13 +157,28 @@ DATABASE_URL=your-postgresql-connection-string
 
 Never expose this value through a `NEXT_PUBLIC_*` variable or commit it.
 
+## Environment Variables
+
+```text
+DATABASE_URL=
+```
+
+`DATABASE_URL` is server-only. Do not prefix it with `NEXT_PUBLIC_` and do not commit real credentials.
+
+## Database Setup
+
+1. Create a PostgreSQL database locally or with a compatible hosted provider.
+2. Configure `DATABASE_URL` in the local environment.
+3. Apply [db/migrations/001_create_enterprise_leads.sql](db/migrations/001_create_enterprise_leads.sql).
+4. Run the application and submit a synthetic test lead if needed.
+
 ## Running Locally
 
 ```text
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). Use `localhost` rather than `127.0.0.1` for local development; earlier testing showed that the alternate origin could block Next.js development client resources.
 
 Validation commands:
 
@@ -164,9 +187,22 @@ npm run lint
 npm run build
 ```
 
-## Validation
+## Validation & QA
 
-The local API matrix covers wrong content type (`415`), malformed JSON (`400`), invalid schema (`422`), and valid payload behavior without a configured database (`503`). Lint and production build pass. Real insertion verification remains environment-blocked until a database is provisioned.
+The verified local API matrix is:
+
+- Wrong Content-Type → `415`
+- Malformed JSON → `400`
+- Invalid schema → `422`
+- Oversized request → `413`
+- `GET /api/leads` → `405`
+- Valid lead → `201`
+
+```text
+npm run lint       PASS
+npm run build      PASS
+git diff --check   PASS
+```
 
 ## Responsive Design
 
@@ -188,6 +224,7 @@ This project used AI-assisted engineering for:
 - API, schema, persistence, and security design review
 - accessibility review and QA checklist generation
 - debugging the Neon driver API mismatch
+- diagnosing the local PostgreSQL driver failure and evaluating the development-origin issue
 - README structure and release-report review
 
 All generated work was reviewed against the repository, the live reference, local rendering, and executable validation commands.
@@ -204,15 +241,26 @@ Developer review and manual decisions included:
 - removing unnecessary client-side email gating so server validation remains authoritative
 - removing an unverified response-time claim
 - manually reviewing CTA destinations, duplicate IDs, API failure modes, and responsive rendering
-- keeping persistence truthfully blocked rather than adding a fake fallback
+- diagnosing form navigation caused by the incorrect development origin
+- switching from the Neon HTTP driver to `pg` only after proving the local PostgreSQL connection
+- verifying the synthetic lead independently in PostgreSQL
+- preserving parameterized SQL and sanitized errors
 
 ## Challenges & Trade-offs
 
-The main trade-offs were maintaining a small Client Component surface while supporting interactive FAQ, mobile navigation, and form states; recovering only verifiable FAQ content from the reference; and keeping the database path deployment-safe without claiming persistence when credentials are unavailable locally.
+The main trade-offs were maintaining a small Client Component surface while supporting interactive FAQ, mobile navigation, and form states; recovering only verifiable FAQ content from the reference; and using `pg` so one PostgreSQL repository supports both local development and hosted production databases. The Neon serverless HTTP driver was not suitable for the standard local PostgreSQL connection.
 
 ## Deployment
 
-The application is structured for Vercel and Neon, but no authenticated Vercel, GitHub, or Neon session was available during this release pass. No live URL or repository URL is claimed here until those external resources are actually created and verified.
+The application is deployed on Vercel:
+
+https://accredian-enterprise-flax-nu.vercel.app/
+
+Source code:
+
+https://github.com/Ghani55-dev/accredian-enterprise
+
+Production database persistence depends on a valid server-side `DATABASE_URL` in the Vercel environment and has not been independently verified in production.
 
 ## Future Improvements
 
