@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { leadSchema } from "@/lib/leads/schema";
 import { createLeadRecord } from "@/server/leads/service";
 
+export const runtime = "nodejs";
+
 const MAX_BODY_SIZE = 16 * 1024;
 
 function getErrorMessageForStatus(status: number) {

@@ -6,7 +6,7 @@ Not deployed yet. Production deployment is authentication-blocked in this enviro
 
 ## Overview
 
-This interview assignment recreates the Accredian Enterprise landing page with a responsive Next.js App Router implementation. It includes reusable page sections, accessible navigation and FAQ interactions, a production-style enquiry form, a `POST /api/leads` Route Handler, and PostgreSQL persistence designed for Neon and Vercel.
+This interview assignment recreates the Accredian Enterprise landing page with a responsive Next.js App Router implementation. It includes reusable page sections, accessible navigation and FAQ interactions, a production-style enquiry form, a `POST /api/leads` Route Handler, and PostgreSQL persistence designed for local PostgreSQL and Neon on Vercel.
 
 This is an independent engineering assignment based on the public Accredian Enterprise reference, not an official Accredian product site.
 
@@ -19,7 +19,7 @@ This is an independent engineering assignment based on the public Accredian Ente
 | Reusable components | Shared layout, section, and UI primitives |
 | API integration | `POST /api/leads` |
 | Lead capture bonus | Accessible enquiry form with server validation |
-| Persistence bonus | PostgreSQL migration and Neon serverless repository |
+| Persistence bonus | PostgreSQL migration and provider-independent repository |
 | Deployment target | Vercel-compatible Next.js architecture |
 
 ## Features
@@ -39,7 +39,7 @@ This is an independent engineering assignment based on the public Accredian Ente
 - TypeScript
 - Tailwind CSS `4.x`
 - Zod `4.4.3`
-- `@neondatabase/serverless` `1.1.0`
+- `pg` `8.x`
 - PostgreSQL / Neon
 - Vercel deployment target
 
@@ -69,7 +69,7 @@ Lead service
 Lead repository
   |
   v
-Neon PostgreSQL
+PostgreSQL / Neon
 ```
 
 The page remains composition-focused. The contact shell and footer are server-rendered; only the form, FAQ, and mobile menu hold client state.
@@ -103,7 +103,7 @@ public/
 - Native `fetch` instead of Axios or a form-state library
 - One canonical Zod schema, authoritative on the server
 - Lightweight service/repository split for the single persistence workflow
-- Neon serverless driver instead of an ORM for one table
+- `node-postgres` instead of an ORM for one table, supporting local PostgreSQL and Neon URLs
 - Parameterized SQL and no public lead-reading endpoint
 - No fake success or in-memory persistence when the database is unavailable
 - Static testimonials instead of an unnecessary carousel dependency
